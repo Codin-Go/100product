@@ -1,0 +1,31 @@
+# 02-3b read html w selenium
+# PANDAS - 특정행 추출
+# read html ?
+# sometimes okay, now okay / ah! dynamic pages!
+
+print("hello0")
+
+from selenium import webdriver
+import pandas as pd
+import requests
+
+import sys
+import io
+sys.stdout = io.TextIOWrapper(sys.stdout.detach(), encoding = 'utf-8')
+sys.stderr = io.TextIOWrapper(sys.stderr.detach(), encoding = 'utf-8')
+
+driver = webdriver.Chrome('C:\chromedriver/chromedriver.exe')
+driver.get("https://finance.naver.com/item/main.nhn?code=005930")
+
+html = driver.page_source
+# URL = "https://finance.naver.com/item/main.nhn?code=005930"
+
+print("hello4")
+financial_stmt = pd.read_html(html)[3]  #4번째 html을 읽으세요
+print(financial_stmt)
+
+# financial_stmt3= financial_stmt.iloc[5,9]  #행열 특정값
+financial_stmt3= financial_stmt.iloc[[5,9],:]
+print(financial_stmt3)
+
+driver.close()

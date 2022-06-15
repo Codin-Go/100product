@@ -1,0 +1,27 @@
+# 03-1 조건식. 
+## ROE*EPS 특정 행열값 추츨 
+
+import pandas as pd
+import requests
+
+URL = "https://finance.naver.com/item/main.nhn?code=005930"
+
+samsung_electronic = requests.get(URL)
+company_html = samsung_electronic.text  #전체 html 중 text만?
+# print (company_html)
+
+financial_stmt = pd.read_html(company_html)[3]  #4번째 html을 읽으세요
+# print(financial_stmt) 
+
+financial_stmt3= financial_stmt.iloc[[5,9],:]  # ROE EPS 행만 뽑으세요
+# print(financial_stmt3)
+
+financial_stmt4 = financial_stmt3.iloc[:,[0,4]]  #2020.12 만 뽑으세요
+print(financial_stmt4)
+
+ROE = financial_stmt4.iloc[0,1] 
+EPS = financial_stmt4.iloc[1,1] 
+Value_Chk1 = ROE*EPS
+# print(ROE)
+# print(EPS)
+print(Value_Chk1)

@@ -1,0 +1,156 @@
+# 04-3e only group value w selenium to excel -except indexerror
+
+from selenium import webdriver
+import requests
+import pandas as pd  # for value
+from bs4 import BeautifulSoup
+
+# 한글 출력
+import sys
+import io
+sys.stdout = io.TextIOWrapper(sys.stdout.detach(), encoding = 'utf-8')
+sys.stderr = io.TextIOWrapper(sys.stderr.detach(), encoding = 'utf-8')
+
+
+# # 만들자, get value code
+def get_value(company_code) :
+    try:
+        driver = webdriver.Chrome('C:\chromedriver/chromedriver.exe')
+        url = "https://finance.naver.com/item/main.nhn?code=" + company_code
+        driver.get(url)
+        html = driver.page_source
+        financial_stmt = pd.read_html(html)[3]  #4번째 html을 읽으세요
+        financial_stmt3= financial_stmt.iloc[[5,9],:]  # ROE EPS 행만 뽑으세요
+        financial_stmt4 = financial_stmt3.iloc[:,[0,4]]  #2020.12 만 뽑으세요
+        ROE = float(financial_stmt4.iloc[0,1])
+        EPS = float(financial_stmt4.iloc[1,1])
+        now_value = ROE*EPS
+        # print(Value_Chk1)
+        driver.close()
+        return now_value
+    except IndexError:
+        return None
+
+# == Company Code Groups
+# company_codes = ["263750", "005930", "068270"]  # OK
+# company_codes = ["005930"]
+# company_codes = ["002700"] # 평가 없는
+# company_codes = ["005930", "002700", "068270"]
+company_codes = ["088980"] # 맥쿼리인프라 에러 / CL
+company_codes = ["005930", "088980"] # 맥쿼리인프라 에러 / CL
+company_codes = ["088980", "005930"] # 맥쿼리인프라 에러
+
+# "005930",
+# "000660",
+# "207940",
+# "035420",
+# "051910",
+# "005935",
+# "068270",
+# "005380",
+# "035720",
+# "006400",
+# "051900",
+# "012330",
+# "028260",
+# "017670",
+# "000270",
+# "036570",
+# "005490",
+# "251270",
+# "105560",
+# "091990",
+# "034730",
+# "066570",
+# "096770",
+# "018260",
+# "003550",
+# "055550",
+# "326030",
+# "015760",
+# "032830",
+# "033780",
+# "009150",
+# "019170",
+# "090430",
+# "000810",
+# "086790",
+# "010130",
+# "011170",
+# "096530",
+# "009830",
+# "018880",
+# "010950",
+# "028300",
+# "030200",
+# "316140",
+# "009540",
+# "006800",
+# "271560",
+# "024110",
+# "021240",
+# "097950",
+# "034220",
+# "196170",
+# "003670",
+# "086280",
+# "032640",
+# "180640",
+# "293490",
+# "035250",
+# "000100",
+# "071050",
+# "068760",
+# "161390",
+# "002790",
+# "000120",
+# "139480",
+# "095700",
+# "285130",
+# "008930",
+# "088980",
+# "011070",
+# "034020",
+# "000720",
+# "267250",
+# "010140",
+# "128940",
+# "004020",
+# "029780",
+# "012750",
+# "011790",
+# "032500",
+# "003490",
+# "005387",
+# "005830",
+# "012510",
+# "035760",
+# "004990",
+# "247540",
+# "011780",
+# "078930",
+# "003410",
+# "008770",
+# "006280",
+# "000210",
+# "026960",
+# "336260",
+# "016360",
+# "241560",
+# "005940",
+# "000080",
+# "042660",
+# ]
+
+
+
+# 엑셀 파일에 기록하기
+result=[]
+for item in company_codes:
+    # print(item)
+    now_value = get_value(item)
+    # print(now_value)
+    result.append([item, now_value])
+    table = pd.DataFrame(result,columns=('company_code','now_value'))
+
+table.to_excel('today_judge j.xlsx', index=False)

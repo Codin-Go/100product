@@ -1,0 +1,24 @@
+# 01-1 NOW PRICE
+# SPEED LOW
+
+import requests
+from bs4 import BeautifulSoup
+
+# 한글 출력
+import sys
+import io
+sys.stdout = io.TextIOWrapper(sys.stdout.detach(), encoding = 'utf-8')
+sys.stderr = io.TextIOWrapper(sys.stderr.detach(), encoding = 'utf-8')
+
+
+url = "https://finance.naver.com/item/main.nhn?code=263750"
+result = requests.get(url)
+bs_obj = BeautifulSoup(result.content, "html.parser")
+
+no_today = bs_obj.find("p", {"class": "no_today"})
+blind = no_today.find("span", {"class": "blind"})
+now_price = blind.text
+
+print(now_price)
+
+# 01 출력확인

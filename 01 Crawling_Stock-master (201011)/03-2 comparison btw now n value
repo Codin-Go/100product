@@ -1,0 +1,44 @@
+# 03-2 조건식. 
+# # ROE*EPS 특정 행열값 추츨
+# # NOW PRICE와 비교 
+
+import pandas as pd
+import requests
+
+URL = "https://finance.naver.com/item/main.nhn?code=005930"
+
+# Value_Chk1 
+samsung_electronic = requests.get(URL)
+company_html = samsung_electronic.text  #전체 html 중 text만?
+financial_stmt = pd.read_html(company_html)[3]  #4번째 html을 읽으세요
+financial_stmt3= financial_stmt.iloc[[5,9],:]  # ROE EPS 행만 뽑으세요
+financial_stmt4 = financial_stmt3.iloc[:,[0,4]]  #2020.12 만 뽑으세요
+ROE = financial_stmt4.iloc[0,1] 
+EPS = financial_stmt4.iloc[1,1] 
+Value_Chk1 = ROE*EPS
+print(Value_Chk1)
+
+
+import requests
+from bs4 import BeautifulSoup
+
+# now_price2 
+result = requests.get(URL)
+bs_obj = BeautifulSoup(result.content, "html.parser")
+no_today = bs_obj.find("p", {"class": "no_today"})
+blind = no_today.find("span", {"class": "blind"})
+now_price = blind.text
+# print(now_price)
+now_price2 = int(now_price.replace(',', ''))
+print(now_price2)
+
+# # int convert done 
+# print("type of number ", type(Value_Chk1))
+# print("type of number ", type(now_price))
+# print("type of number ", type(int(now_price2)))
+
+# Comparison 
+if now_price2 > Value_Chk1 :
+    print("비싸다")
+else:
+    print("싸다")

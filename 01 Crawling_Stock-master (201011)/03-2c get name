@@ -1,0 +1,42 @@
+# 03-2c get name 
+
+import requests
+import pandas as pd  # for value
+from bs4 import BeautifulSoup
+
+
+def get_bs_obj(company_code):
+    url = "https://finance.naver.com/item/main.nhn?code=" + company_code
+    result = requests.get(url)
+    bs_obj = BeautifulSoup(result.content, "html.parser")
+    return bs_obj
+
+
+def get_name(company_code) : 
+    bs_obj = get_bs_obj(company_code)
+    company_name2 = bs_obj.find("div", {"class": "wrap_company"})
+    company_name3 = company_name2.find('h2')
+    company_name = company_name3.text
+    
+    return company_name
+
+company_codes = ["005930"]
+
+for item in company_codes:
+    # now_price = get_price(item)
+    # # print(now_price)
+    # now_value = get_value(item)
+    # # print(now_value)
+    # judge = round(now_value/now_price, 2)
+    # print("company_code:", item, ", now_price: ", now_price, ", now_value:", now_value, ", judge:", judge)
+
+    name = get_name(item)
+    print("company_name", name)
+    
+    # if now_price > now_value :
+    #     print("비싸다")
+    # else:
+    #     print("싸다")
+
+
+    

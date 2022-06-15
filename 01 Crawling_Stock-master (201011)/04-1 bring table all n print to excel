@@ -1,0 +1,25 @@
+# 04-1 Bring Table All & Print to Excel
+# https://pydata.tistory.com/1
+
+import pandas as pd
+url ='https://search.naver.com/search.naver?where=nexearch&sm=top_hty&fbm=1&ie=utf8&query=%ED%99%98%EC%9C%A8%EC%A1%B0%ED%9A%8C'
+tables = pd.read_html(url)
+
+# 한글 출력
+import sys
+import io
+sys.stdout = io.TextIOWrapper(sys.stdout.detach(), encoding = 'utf-8')
+sys.stderr = io.TextIOWrapper(sys.stderr.detach(), encoding = 'utf-8')
+
+# table qty chk
+chk_tables_qty = len(tables)
+print(chk_tables_qty)
+
+# table check
+print(tables)
+print (tables[0])
+print (tables[1])
+
+# print to excel
+df = tables[1]
+df.to_excel('exchange rate.xlsx')

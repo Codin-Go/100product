@@ -1,0 +1,11 @@
+{
+	"folders": [
+		{
+			"name": "bm_mvp",
+			"path": "../../bm_mvp"
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "bm_mvp"
+	}
+}

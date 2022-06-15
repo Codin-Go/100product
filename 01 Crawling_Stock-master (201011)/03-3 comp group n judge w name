@@ -1,0 +1,67 @@
+# 03-3 comp group n judge w name
+
+import requests
+import pandas as pd  # for value
+from bs4 import BeautifulSoup
+
+# 한글 출력
+import sys
+import io
+sys.stdout = io.TextIOWrapper(sys.stdout.detach(), encoding = 'utf-8')
+sys.stderr = io.TextIOWrapper(sys.stderr.detach(), encoding = 'utf-8')
+
+
+# company_code를 입력받아 bs_obj를 출력
+def get_bs_obj(company_code):
+    url = "https://finance.naver.com/item/main.nhn?code=" + company_code
+    result = requests.get(url)
+    bs_obj = BeautifulSoup(result.content, "html.parser")
+    return bs_obj
+
+# company_code를 입력받아 now_price를 출력
+def get_price(company_code):
+    bs_obj = get_bs_obj(company_code)
+    no_today = bs_obj.find("p", {"class": "no_today"})
+    blind = no_today.find("span", {"class": "blind"})
+    now_price2 = blind.text
+    now_price = float(now_price2.replace(',', ''))
+    return now_price
+
+# 만들자, get value code
+def get_value(company_code) :
+    url = "https://finance.naver.com/item/main.nhn?code=" + company_code
+    get_url = requests.get(url)
+    company_html = get_url.text  #전체 html 중 text만?
+    financial_stmt = pd.read_html(company_html)[3]  #4번째 html을 읽으세요
+    financial_stmt3= financial_stmt.iloc[[5,9],:]  # ROE EPS 행만 뽑으세요
+    financial_stmt4 = financial_stmt3.iloc[:,[0,4]]  #2020.12 만 뽑으세요
+    ROE = float(financial_stmt4.iloc[0,1])
+    EPS = float(financial_stmt4.iloc[1,1])
+    now_value = ROE*EPS
+    # print(Value_Chk1)
+    return now_value
+
+def get_name(company_code) :
+    bs_obj = get_bs_obj(company_code)
+    company_name2 = bs_obj.find("div", {"class": "wrap_company"})
+    company_name3 = company_name2.find('h2')
+    company_name = company_name3.text
+    return company_name
+
+# 펄어비스 회사 코드는 "263750"
+# 삼성전자 회사 코드는 "005930"
+# 셀트리온 회사 코드는 "068270"
+company_codes = ["263750", "005930", "068270"]
+# company_codes = ["005930"]
+# company_codes = ["263750"]
+
+
+for item in company_codes:
+    now_price = get_price(item)
+    # print(now_price)
+    now_value = get_value(item)
+    # print(now_value)
+    name = get_name(item)
+
+    judge = round(now_value/now_price, 2)
+    print("company_code:", item, ", company_name:", name, ", now_price: ", now_price, ", now_value:", now_value, ", judge:", judge)

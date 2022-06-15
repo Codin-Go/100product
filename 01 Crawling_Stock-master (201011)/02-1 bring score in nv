@@ -1,0 +1,22 @@
+# 종목, 원하는 값 긁어오기 영업이익.
+# 재무재표 가져오기  - https://engkimbs.tistory.com/624
+
+import requests
+from bs4 import BeautifulSoup
+
+# 한글 출력
+import sys
+import io
+sys.stdout = io.TextIOWrapper(sys.stdout.detach(), encoding = 'utf-8')
+sys.stderr = io.TextIOWrapper(sys.stderr.detach(), encoding = 'utf-8')
+
+URL = "https://finance.naver.com/item/main.nhn?code=005930"
+
+samsung_electronic = requests.get(URL)
+html = samsung_electronic.text
+
+soup = BeautifulSoup(html, 'html.parser')
+
+finance_html = soup.select('div.section.cop_analysis div.sub_section')
+
+print(finance_html)

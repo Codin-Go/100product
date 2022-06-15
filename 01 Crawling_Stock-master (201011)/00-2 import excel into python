@@ -1,0 +1,12 @@
+# 05-2 import excel into python
+company_codes = ["263750", "005930", "068270"]
+print(company_codes)
+
+import pandas as pd
+
+# data = pd.read_excel (r'C:\Users\lim\Documents\PROJECT\Today_judge D.xlsx')
+data = pd.read_excel (r'C:\Users\lim\Documents\PROJECT\data_temp2 - shirink.xls')
+# df = pd.DataFrame(data, columns= ['company_code'])
+# df = pd.DataFrame(data)
+df = pd.DataFrame(data, columns= ['종목코드'])
+print (df)

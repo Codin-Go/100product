@@ -1,0 +1,77 @@
+# 04-3b only group value w selenium
+# okay
+
+from selenium import webdriver
+import requests
+import pandas as pd  # for value
+from bs4 import BeautifulSoup
+
+# 한글 출력
+import sys
+import io
+sys.stdout = io.TextIOWrapper(sys.stdout.detach(), encoding = 'utf-8')
+sys.stderr = io.TextIOWrapper(sys.stderr.detach(), encoding = 'utf-8')
+
+# driver = webdriver.Chrome('C:\chromedriver/chromedriver.exe')
+
+# driver.get("https://finance.naver.com/item/main.nhn?code=005930")
+# html = driver.page_source
+
+# company_code를 입력받아 bs_obj를 출력
+# def get_bs_obj(company_code):
+#     url = "https://finance.naver.com/item/main.nhn?code=" + company_code
+#
+#     driver.get(url)
+#     html = driver.page_source
+#     # result = requests.get(url)
+#     bs_obj = BeautifulSoup(html.content, "html.parser")
+#     return bs_obj
+
+# # 만들자, get value code
+def get_value(company_code) :
+
+    driver = webdriver.Chrome('C:\chromedriver/chromedriver.exe')
+    url = "https://finance.naver.com/item/main.nhn?code=" + company_code
+    driver.get(url)
+    html = driver.page_source
+
+    # get_url = requests.get(url)
+    # company_html = html.text  #전체 html 중 text만?
+    financial_stmt = pd.read_html(html)[3]  #4번째 html을 읽으세요
+    financial_stmt3= financial_stmt.iloc[[5,9],:]  # ROE EPS 행만 뽑으세요
+    financial_stmt4 = financial_stmt3.iloc[:,[0,4]]  #2020.12 만 뽑으세요
+    ROE = float(financial_stmt4.iloc[0,1])
+    EPS = float(financial_stmt4.iloc[1,1])
+    now_value = ROE*EPS
+    # print(Value_Chk1)
+    driver.close()
+
+    return now_value
+
+
+# == Company Code Groups
+company_codes = ["263750", "005930", "068270"]  # OK
+# company_codes = ["005930"]
+
+
+# 엑셀 파일에 기록하기
+result=[]
+for item in company_codes:
+    print(item)
+    now_value = get_value(item)
+    print(now_value)
+
+    # now_value = get_value(item)
+    # print(now_value)
+
+    # result.append([get_price(item),get_value(item)])
+    # result.append([item, name, get_price(item),get_value(item),judge])
+    # # table = pd.DataFrame(result,columns=('title','description'))
+    # table = pd.DataFrame(result,columns=('company_code','company_name','now_price','now_value','judge'))
+
+    # new table
+    # result.append([item, get_value(item)])
+    # table = pd.DataFrame(result,columns=('company_code','now_value'))
+    #
+
+# table.to_excel('today_judge A.xlsx', index=False)

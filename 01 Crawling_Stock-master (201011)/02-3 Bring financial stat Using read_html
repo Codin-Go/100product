@@ -1,0 +1,31 @@
+# 02-3 read html
+# PANDAS - 특정행 추출
+# read html ?
+# sometimes okay, now okay
+
+import pandas as pd
+import requests
+
+# 한글 출력
+import sys
+import io
+sys.stdout = io.TextIOWrapper(sys.stdout.detach(), encoding = 'utf-8')
+sys.stderr = io.TextIOWrapper(sys.stderr.detach(), encoding = 'utf-8')
+
+
+URL = "https://finance.naver.com/item/main.nhn?code=005930"
+
+samsung_electronic = requests.get(URL)
+company_html = samsung_electronic.text  #전체 html 중 text만?
+# print (company_html)
+
+financial_stmt = pd.read_html(company_html)[3]  #4번째 html을 읽으세요
+# financial_stmt = pd.read_html(str(company_html)[3])  #4번째 html을 읽으세요
+print(financial_stmt)
+#
+# financial_stmt2= financial_stmt.drop([financial_stmt.index[1],financial_stmt.index[1],financial_stmt.index[1],financial_stmt.index[1]])  #특정 열만 빼세요
+# print(financial_stmt2)
+
+# financial_stmt3= financial_stmt.iloc[5,9]  #행열 특정값
+financial_stmt3= financial_stmt.iloc[[5,9],:]
+print(financial_stmt3)
